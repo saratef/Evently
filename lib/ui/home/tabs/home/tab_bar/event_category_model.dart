@@ -55,5 +55,12 @@ class EventCategoryModel {
      darkImage:AppImages.darkMeeting,
     ),
   ];
-
+  static String getCategoryImage({required int categoryIndex, required bool isDark}) {
+    int index = categoryIndex - 1;
+    if (index >= 0 && index < tabBarEvents.length) {
+      var category = tabBarEvents[index];
+      return (isDark ? category.darkImage : category.lightImage) ?? AppImages.sports;
+    }
+    return isDark ? AppImages.darkSport : AppImages.sports;
+  }
 }

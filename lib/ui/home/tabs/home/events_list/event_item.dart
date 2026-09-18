@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/providers/theme_provider.dart';
+import 'package:evently/ui/home/tabs/home/tab_bar/event_category_model.dart';
 import 'package:evently/utils/app_assets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../model/event.dart';
 import '../../../../../utils/size_utils.dart';
@@ -19,6 +22,12 @@ class EventItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = context.width;
     var height = context.height;
+    bool isDark = Provider.of<AppThemeProvider>(context).isDark;
+
+    String currentImage = EventCategoryModel.getCategoryImage(
+      categoryIndex: event.eventCategoryIndex,
+      isDark: isDark,
+    );
 
     return Container(
       height: height * .25,
@@ -30,7 +39,7 @@ class EventItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).dividerColor, width: 2),
         image: DecorationImage(
-          image: AssetImage(event.eventImage),
+          image: AssetImage(currentImage),
           fit: BoxFit.fill,
         ),
       ),

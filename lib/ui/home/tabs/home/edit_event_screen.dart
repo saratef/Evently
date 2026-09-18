@@ -313,9 +313,10 @@ class _EditEventScreenState extends State<EditEventScreen> {
       event.eventTitle = titleController.text.trim();
       event.eventDescription = descriptionController.text.trim();
       event.eventCategoryIndex = selectedIndex + 1;
-      event.eventImage = isDark
-          ? eventCategoriesList[selectedIndex].darkImage!
-          : eventCategoriesList[selectedIndex].lightImage!;
+      event.eventImage = EventCategoryModel.getCategoryImage(
+        categoryIndex: selectedIndex + 1,
+        isDark: isDark,
+      );
       event.eventDate = DateTime(
         selectedDate!.year,
         selectedDate!.month,

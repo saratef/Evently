@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/model/event.dart';
 import 'package:evently/providers/theme_provider.dart';
+import 'package:evently/ui/home/tabs/home/tab_bar/event_category_model.dart';
 import 'package:evently/utils/app_assets.dart';
 import 'package:evently/utils/app_colors.dart';
 import 'package:evently/utils/app_routes.dart';
@@ -28,9 +29,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     var width = context.width;
     var height = context.height;
 
-    String currentImage = isDark
-        ? event.eventImage.replaceAll('Light', 'Dark').replaceAll('light', 'dark')
-        : event.eventImage.replaceAll('Dark', 'Light').replaceAll('dark', 'light');
+    String currentImage = EventCategoryModel.getCategoryImage(
+      categoryIndex: event.eventCategoryIndex,
+      isDark: isDark,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -219,7 +221,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         FirebaseUtils.deleteEventFireSore(eventId).then((value) {
           ToastUtils.showToastMessage(
             message: 'Event Deleted Successfully',
-            backgroundColor: AppColors.primaryLight,
+            backgroundColor: AppColors.success,
             textColor: AppColors.textPrimaryDark,
           );
           Navigator.pop(context);

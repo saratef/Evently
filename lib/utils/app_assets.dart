@@ -2,8 +2,7 @@ class AppImages {
   AppImages._();
   static const String _base = 'assets/images/';
 
-  static const String birthday = '${_base}birthday.png';
-  static const String book = '${_base}book.png';
+
 
   static const String darkBirthday = '${_base}dark_birthday.png';
   static const String darkBook = '${_base}dark_book.png';
@@ -12,10 +11,14 @@ class AppImages {
   static const String darkSport = '${_base}dark_sport.png';
 
   static const String eventlyLogo = '${_base}evently_logo.png';
+  static const String exhibition = '${_base}light_exhibition.png';
+  static const String meeting = '${_base}light_meeting.png';
+  static const String birthday = '${_base}light_birthday.png';
+  static const String book = '${_base}light_book.png';
+  static const String sports = '${_base}light_sports.png';
 
-  static const String exhibition = '${_base}exhibition.png';
   static const String forgetPassword = '${_base}forget_password.png';
-  static const String meeting = '${_base}meeting.png';
+
 
   static const String onboarding1 = '${_base}onboarding1.png';
   static const String onboarding2 = '${_base}onboarding2.png';
@@ -23,7 +26,6 @@ class AppImages {
   static const String onboarding4 = '${_base}onboarding4.png';
   static const String profilePhoto = '${_base}profile_photo.png';
 
-  static const String sports = '${_base}sports.png';
 }
 
 class AppIcons {
