@@ -49,20 +49,25 @@ class FirebaseUtils {
   static Future<void>updateEventFirestore(Event event){
     return getEventsCollections().doc(event.eventId).update(event.toFireStore());
   }
-
-  static Stream<List<Event>> getAllEvents() {
-    Stream<QuerySnapshot<Event>> stream = FirebaseUtils.getEventsCollections()
+  static Stream<List<Event>> getAllEvents(String uId) {
+    Stream<QuerySnapshot<Event>> stream = getEventsCollections()
+        .where('uId', isEqualTo: uId)
         .orderBy('event_date')
         .snapshots();
-    return stream.map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
-        return doc.data();
-      }).toList();
-    });
+    return stream.map((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
   }
 
-  static Stream<List<Event>> getFilterEvents({required int selectedIndex}) {
+  static Stream<List<Event>> getAllFavouriteEvents(String uId) {
+    return getEventsCollections()
+        .where('is_favourite', isEqualTo: true)
+        .orderBy('event_date')
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
+  }
+
+  static Stream<List<Event>> getFilterEvents({required int selectedIndex,String? uId}) {
     Stream<QuerySnapshot<Event>> stream = FirebaseUtils.getEventsCollections()
+        .where('uId', isEqualTo: uId)
         .where('event_category_index', isEqualTo: selectedIndex)
         .orderBy('event_date')
         .snapshots();
@@ -79,17 +84,6 @@ class FirebaseUtils {
     });
   }
 
-  static Stream<List<Event>> getAllFavouriteEvents() {
-    return getEventsCollections()
-        .where('is_favourite', isEqualTo: true)
-        .orderBy('event_date')
-        .snapshots()
-        .map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
-        return doc.data();
-      }).toList();
-    });
-  }
 
 
 

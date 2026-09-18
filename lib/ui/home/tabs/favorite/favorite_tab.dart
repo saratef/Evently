@@ -3,8 +3,11 @@ import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/ui/widgets/custom_text_form_field.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../model/event.dart';
+import '../../../../providers/user_provider.dart';
+import '../../../../utils/app_routes.dart';
 import '../../../../utils/firebase_utils.dart';
 import '../home/events_list/event_item.dart';
 
@@ -18,11 +21,18 @@ class FavoriteTab extends StatefulWidget {
 class _FavoriteTabState extends State<FavoriteTab> {
   String searchQuery = '';
   Stream<List<Event>>? favoriteStream;
+  bool isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    favoriteStream = FirebaseUtils.getAllFavouriteEvents();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!isInitialized) {
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      String uId = userProvider.currentUser?.id ?? '';
+
+      favoriteStream = FirebaseUtils.getAllFavouriteEvents( uId);
+      isInitialized = true;
+    }
   }
 
   @override
@@ -83,6 +93,8 @@ class _FavoriteTabState extends State<FavoriteTab> {
                         .contains(searchQuery.toLowerCase().trim());
                   }).toList();
 
+                  filteredList.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+
                   if (filteredList.isEmpty) {
                     return Center(
                       child: Text(
@@ -94,11 +106,20 @@ class _FavoriteTabState extends State<FavoriteTab> {
 
                   return ListView.separated(
                     itemBuilder: (context, index) {
-                      return EventItem(
-                        event: filteredList[index],
-                        onFavoritePressed: () {
-                          // FirebaseUtils.updateFavoriteEvent(filteredList[index]);
+                      return InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.eventDetailsRouteName,
+                            arguments: filteredList[index],
+                          );
                         },
+                        child: EventItem(
+                          event: filteredList[index],
+                          onFavoritePressed: () {
+                            FirebaseUtils.updateIsFavourite(filteredList[index]);
+                          },
+                        ),
                       );
                     },
                     separatorBuilder: (context, index) {

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/event.dart';
+import '../../../providers/user_provider.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/firebase_utils.dart';
 import '../../../utils/toast_utils.dart';
@@ -267,33 +268,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   void addEvent() {
     if (formKey.currentState?.validate() == true) {
-      if (selectedDate == null || selectedTime == null) {
-        ToastUtils.showToastMessage(
-          message: 'Please choose date and time',
-          backgroundColor: AppColors.error,
-          textColor: AppColors.textPrimaryDark,
-        );
-        return;
-      }
+      if (selectedDate == null || selectedTime == null) return;
 
       bool isDark = Provider.of<AppThemeProvider>(context, listen: false).isDark;
+
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
 
       Event event = Event(
         eventName: eventCategoriesList[selectedIndex].eventName,
         eventDate: DateTime(
-          selectedDate!.year,
-          selectedDate!.month,
-          selectedDate!.day,
-          selectedTime!.hour,
-          selectedTime!.minute,
+          selectedDate!.year, selectedDate!.month, selectedDate!.day,
+          selectedTime!.hour, selectedTime!.minute,
         ),
         eventDescription: description,
-        eventImage: isDark
-            ? eventCategoriesList[selectedIndex].darkImage!
-            : eventCategoriesList[selectedIndex].lightImage!,
+        eventImage: EventCategoryModel.getCategoryImage(
+          categoryIndex: selectedIndex + 1,
+          isDark: isDark,
+        ),
         eventTitle: title,
         eventCategoryIndex: selectedIndex + 1,
+        uId: userProvider.currentUser?.id ?? '',
       );
+
 
       FirebaseUtils.addEventInFireStore(event).then((value) {
         ToastUtils.showToastMessage(
@@ -310,5 +306,5 @@ class _AddEventScreenState extends State<AddEventScreen> {
         );
       });
     }
-  }
-}
+  }}
+

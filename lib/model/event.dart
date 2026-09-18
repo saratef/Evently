@@ -1,8 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Event {
-  static const String collectionName='Events';
+  static const String collectionName = 'Events';
   String eventId;
   String eventImage;
   String eventName;
@@ -11,37 +10,45 @@ class Event {
   DateTime eventDate;
   int eventCategoryIndex;
   bool isFavourite;
+  String uId;
   Event({
-    this.eventId='',
+    this.eventId = '',
     required this.eventName,
     required this.eventDate,
     required this.eventDescription,
     required this.eventImage,
     required this.eventTitle,
     required this.eventCategoryIndex,
-    this.isFavourite=false,
+    this.isFavourite = false,
+    this.uId = '',
   });
-  Event.fromFireStore(Map<String,dynamic>data):this(
-      eventDate:(data['event_date']as Timestamp).toDate() ,
-      eventDescription:data['event_description']  ,
-      eventImage:data['event_image']  ,
-      eventName: data['event_name'] ,
-      eventTitle:data['event_title']  ,
-      eventId:data['event_id']  ,
-      eventCategoryIndex:data['event_category_index']  ,
-      isFavourite: data['is_favourite']
-  );
-  Map<String,dynamic>toFireStore(){
-    return{
-      'event_id':eventId,
-      'event_name':eventName,
-      'event_date':eventDate,
-      'event_description':eventDescription,
-      'event_image':eventImage,
-      'event_title':eventTitle,
-      'is_favourite':isFavourite,
-      'event_category_index':eventCategoryIndex,
 
+  Event.fromFireStore(Map<String, dynamic> data)
+      : this(
+    eventId: data['event_id'] ?? '',
+    eventName: data['event_name'] ?? '',
+    eventImage: data['event_image'] ?? '',
+    eventTitle: data['event_title'] ?? '',
+    eventDescription: data['event_description'] ?? '',
+    eventDate: data['event_date'] != null
+        ? (data['event_date'] as Timestamp).toDate()
+        : DateTime.now(),
+    eventCategoryIndex: data['event_category_index'] ?? 0,
+    isFavourite: data['is_favourite'] ?? false,
+    uId: data['uId'] ?? '',
+  );
+
+  Map<String, dynamic> toFireStore() {
+    return {
+      'event_id': eventId,
+      'event_name': eventName,
+      'event_date': Timestamp.fromDate(eventDate),
+      'event_description': eventDescription,
+      'event_image': eventImage,
+      'event_title': eventTitle,
+      'is_favourite': isFavourite,
+      'event_category_index': eventCategoryIndex,
+      'uId': uId,
     };
   }
 }

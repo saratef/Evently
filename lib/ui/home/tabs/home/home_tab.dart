@@ -24,6 +24,8 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   int selectedIndex = 0;
+  bool isInitialized = false;
+
   final tabBarEvents = [
     EventCategoryModel(
       eventName: LocaleKeys.all,
@@ -36,17 +38,26 @@ class _HomeTabState extends State<HomeTab> {
   Stream<List<Event>>? eventStream;
 
   @override
-  void initState() {
-    super.initState();
-    eventStream = FirebaseUtils.getAllEvents();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!isInitialized) {
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      String uId = userProvider.currentUser?.id ?? '';
+      eventStream = FirebaseUtils.getAllEvents( uId);
+      isInitialized = true;
+    }
   }
 
   void updateStream(int index) {
     selectedIndex = index;
+ var userProvider = Provider.of<UserProvider>(context, listen: false);
+    String uId = userProvider.currentUser?.id ?? '';
+
     if (selectedIndex == 0) {
-      eventStream = FirebaseUtils.getAllEvents();
+      eventStream = FirebaseUtils.getAllEvents( uId);
     } else {
-      eventStream = FirebaseUtils.getFilterEvents(selectedIndex: selectedIndex);
+      eventStream = FirebaseUtils.getFilterEvents(
+          selectedIndex: selectedIndex, uId: uId);
     }
     setState(() {});
   }
